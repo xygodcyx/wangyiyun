@@ -7,7 +7,7 @@ const bottomNavItemActiveIndex = ref(0);
 </script>
 <template>
   <!-- <div><AudioPlay></AudioPlay>;</div> -->
-  <div class="Home">
+  <div class="Home" id="Home">
     <div class="content">
       <div v-show="bottomNavItemActiveIndex == 0" class="contentItem myDiscover">
         <TopNav></TopNav>
@@ -22,11 +22,12 @@ const bottomNavItemActiveIndex = ref(0);
       <div v-show="bottomNavItemActiveIndex == 2" class="contentItem cloudVillage">2</div>
     </div>
   </div>
+  <SongPlay></SongPlay>
   <BottomNav v-model="bottomNavItemActiveIndex"></BottomNav>
 </template>
 <style lang="less" scoped>
-.Home {
-  width: 100%;
+#Home {
+  width: 100vw;
   min-height: 160vh;
   background: linear-gradient(#e9e5fc82, #fff);
   .content {

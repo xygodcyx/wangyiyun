@@ -19,6 +19,8 @@ declare module 'vue' {
     NDrawer: typeof import('naive-ui')['NDrawer']
     NEllipsis: typeof import('naive-ui')['NEllipsis']
     NIcon: typeof import('naive-ui')['NIcon']
+    NProgress: typeof import('naive-ui')['NProgress']
+    PlaylistDetail: typeof import('./src/components/PlaylistDetail.vue')['default']
     RandomPlaylist: typeof import('./src/components/RandomPlaylist.vue')['default']
     RandomSong: typeof import('./src/components/RandomSong.vue')['default']
     RecommendedPlaylist: typeof import('./src/components/RecommendedPlaylist.vue')['default']
@@ -26,6 +28,8 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Search: typeof import('./src/components/Search.vue')['default']
+    Song: typeof import('./src/components/Song.vue')['default']
+    SongPlay: typeof import('./src/components/SongPlay.vue')['default']
     TopNav: typeof import('./src/components/TopNav.vue')['default']
   }
 }

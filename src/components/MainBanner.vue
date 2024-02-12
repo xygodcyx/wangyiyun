@@ -33,27 +33,11 @@ const loadBanners = async (type: number = 1) => {
     });
   });
 };
-
-const onClickBanner = (banner: bannerType) => {
-  console.log(banner);
-  if (banner.url) {
-    location.assign(banner.url);
-  } else if (banner.songId) {
-    test.value = `https://music.163.com/song/media/outer/url?id=${banner.songId}.mp3`;
-  }
-};
-const test = ref('');
 </script>
 <template>
   <div class="banner" id="banner">
-    <audio controls autoplay :src="test"></audio>
     <n-carousel :space-between="20" show-arrow draggable autoplay>
-      <div
-        class="bannerItem"
-        v-bind:key="index"
-        v-for="(banner, index) in bannersData"
-        @click="onClickBanner(banner)"
-      >
+      <div class="bannerItem" v-bind:key="index" v-for="(banner, index) in bannersData">
         <img class="carousel-img" :src="banner.pic" />
         <div class="typeTitle">
           {{ banner.typeTitle }}
