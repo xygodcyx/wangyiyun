@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import RecommendedSong from '../components/RecommendedSong.vue';
-import { getRecommendedPlaylist } from '@/request/GetRecommendedPlaylist';
 import { onMounted, ref } from 'vue';
-import type { RecommendedSongType } from '../unit';
+import type { TRecommendedSongType } from '@/type';
+import requests from '@/request';
+const { getRecommendedPlaylist } = requests;
 
-const recommendedPlaylist = ref<RecommendedSongType[]>([]);
-const recommendedReallyPlaylist = ref<RecommendedSongType[]>([]);
+const recommendedPlaylist = ref<TRecommendedSongType[]>([]);
+const recommendedReallyPlaylist = ref<TRecommendedSongType[]>([]);
 onMounted(async () => {
-  const result = await getRecommendedPlaylist(false);
-  const data: RecommendedSongType[] = result.data.result;
-  console.table(data);
+  const result = await getRecommendedPlaylist();
+  const data: TRecommendedSongType[] = result.data.result;
+  // console.table(data);
   data.map((play) => {
     const {
       id,
@@ -175,3 +176,4 @@ const checkRandomIndex = (index: number) => {
   }
 }
 </style>
+@/request/SongList/GetRecommendedPlaylist ../type

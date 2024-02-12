@@ -1,5 +1,25 @@
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+const topNavClass = ref('');
+onMounted(() => {
+  window.addEventListener('scroll', handleScroll);
+});
+onUnmounted(() => {
+  window.removeEventListener('scroll', handleScroll);
+});
+const handleScroll = () => {
+  // 获取滚动条的滚动高度
+  const scrollTop = window.scrollY;
+  if (scrollTop >= 70) {
+    topNavClass.value = 'active';
+  } else {
+    topNavClass.value = '';
+  }
+};
+</script>
 <template>
   <div class="topNav" :class="topNavClass" id="topNav">
+    <div class="topNavBackground"></div>
     <div class="topNavLeft">
       <svg class="icon" aria-hidden="true">
         <use xlink:href="#icon-santiao"></use>
@@ -23,45 +43,28 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-const topNavClass = ref('');
-onMounted(() => {
-  window.addEventListener('scroll', handleScroll);
-});
-onUnmounted(() => {
-  window.removeEventListener('scroll', handleScroll);
-});
-const handleScroll = () => {
-  // 获取滚动条的滚动高度
-  const scrollTop = window.scrollY;
-  if (scrollTop >= 70) {
-    topNavClass.value = 'active';
-  } else {
-    topNavClass.value = '';
-  }
-};
-</script>
-
 <style lang="less" scoped>
 #topNav.topNav.active {
-  background: #fffffff6;
-  transition: background 0.4s;
+  top: 0px;
+  filter: invert(100%);
 }
 #topNav.topNav {
   width: 100%;
   height: 50px;
   display: flex;
-  flex: 1 3 1;
-  padding: 0.4rem;
-  top: 0;
   justify-content: space-between;
   align-items: center;
   position: sticky;
+  top: 6px;
   z-index: 999;
-  background: linear-gradient(#e9e5fc55, #e9e5fc00);
-  transition: background 0.4s;
+  filter: invert(0%);
+  transition: filter, background-color, top, 0.4s;
+  .topNavBackground {
+    width: 100vw;
+    z-index: 9999;
+    position: absolute;
+    background: linear-gradient(#e9e5fc55, #e9e5fc00);
+  }
   .topNavLeft {
     margin-top: 0.2rem;
     .icon {
