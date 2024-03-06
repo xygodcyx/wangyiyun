@@ -46,6 +46,7 @@ const bottomNav = ref<bottomLabelType[]>([
 
 <style lang="less" scoped>
 #bottomNav.bottomNav {
+  position: fixed;
   width: 100%;
   height: 1.2rem;
   display: flex;
@@ -53,7 +54,6 @@ const bottomNav = ref<bottomLabelType[]>([
   margin: 0 auto;
   justify-content: space-around;
   align-items: center;
-  position: sticky;
   bottom: 0;
   z-index: 999;
   background-color: #ffffff;

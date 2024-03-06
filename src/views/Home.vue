@@ -28,7 +28,7 @@ const bottomNavItemActiveIndex = ref(0);
 <style lang="less" scoped>
 #Home {
   width: 100vw;
-  min-height: 160vh;
+  min-height: 130vh;
   background: linear-gradient(#e9e5fc82, #fff);
   .content {
     width: 100%;

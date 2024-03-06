@@ -64,7 +64,6 @@ const onAfterEnter = async () => {
   GlobalVar.songPlayClass.splice(GlobalVar.songPlayClass.indexOf('inPlayListBefore'), 1);
 };
 const onAfterLeave = () => {
-  console.log('leave');
   GlobalVar.inPlaylist = false;
   GlobalVar.songPlayClass.splice(GlobalVar.songPlayClass.indexOf('inPlayList'), 1);
 };
@@ -130,10 +129,8 @@ const onScroll = async (e: TSrollType) => {
     songsData.value!.length >= PlayListDetail.value!.trackCount
   )
     return;
-  // console.log(content.value?.clientHeight);
   //显示加载动画
   canScrollHandel = false;
-  console.log('start');
   loadingMoreSongs.value = true;
   loadedPage.value++;
   GlobalVar.songPlayClass.push('hide');
@@ -148,8 +145,6 @@ const onScroll = async (e: TSrollType) => {
     clearTimeout(hook);
   }, 200);
   e.target!.scrollTop += allHeight * howMany;
-  console.log('loadedPage：' + loadedPage.value);
-  console.log('done');
   loadingMoreSongs.value = false;
   GlobalVar.songPlayClass.splice(GlobalVar.songPlayClass.indexOf('hide'), 1);
 };
@@ -176,18 +171,14 @@ const addSong2PlayList = (song: TTrackType) => {
 
 const onSongClick = (song: TTrackType) => {
   if (song.fee === 1) {
-    console.log('no play');
     return;
   }
-  console.log(song);
   addSong2PlayList(song);
   SongManger.saveSongData();
 };
 //播放全部歌曲
 const playAllSong = async () => {
-  console.log('playAllStart');
   await playAllSongSync();
-  console.log('playAllDone');
   SongManger.index = 0;
 };
 const allCanPlay = computed(() => {

@@ -47,7 +47,6 @@ onMounted(async () => {
       i++;
     }
   }
-  console.log(recommendedReallyPlaylist.value);
 });
 const checkRandomIndex = (index: number) => {
   let randomIndex = Math.floor(Math.random() * recommendedPlaylist.value.length);

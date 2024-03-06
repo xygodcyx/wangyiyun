@@ -19,7 +19,6 @@ export const useSongManger = defineStore('songManager', () => {
     ) {
       index.value = 0;
       songs.value = [];
-      console.log('no songs');
       return;
     }
     if (
@@ -29,15 +28,12 @@ export const useSongManger = defineStore('songManager', () => {
     ) {
       index.value = 0;
       songs.value = [];
-      console.log('no data');
       return;
     }
     songs.value = JSON.parse(localStorage.getItem('songs') || '');
     curPlaySongData.time = parseFloat(localStorage.getItem('playSongTime') || '0');
     curPlaySongData.song = JSON.parse(localStorage.getItem('songData') || '');
     index.value = findSongIndex(curPlaySongData.song.id);
-    console.log(nowSong);
-    console.log(index.value);
   });
   const canPlay = computed(() => songs.value.length !== 0);
   const hasSong = (songId: number) => {
@@ -51,7 +47,6 @@ export const useSongManger = defineStore('songManager', () => {
     formatIndex();
   };
   const removeSong = (_song: TTrackType) => {
-    console.log(_song);
     let _index = songs.value.findIndex((song) => song.id === _song.id);
     songs.value.splice(_index, 1);
     formatIndex();

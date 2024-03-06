@@ -91,7 +91,7 @@ const onPlayListClick = () => {
   margin-right: 0.24rem;
   .card {
     position: relative;
-    width: 100px;
+    width: 100%;
     height: 100px;
     cursor: pointer;
     .cover {

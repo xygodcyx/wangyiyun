@@ -9,15 +9,19 @@ const props = defineProps({
   index: {
     type: Number,
     default: 1
+  },
+  isShowIndex: {
+    type: Boolean,
+    default: true
   }
 });
 onMounted(() => {});
 //播放歌曲
 </script>
 <template>
-  <div class="song" :class="songData.fee === 1 ? 'noPlay' : ''">
+  <div class="song" :class="songData.fee === (1 || 4) ? 'noPlay' : ''">
     <div class="left">
-      <div class="label">{{ index }}</div>
+      <div v-show="isShowIndex" class="label">{{ index }}</div>
       <div class="detail">
         <div class="name">
           <n-ellipsis :line-clamp="1">

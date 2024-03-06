@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, nextTick, onBeforeUnmount, reactive } from 'vue';
+import {
+  ref,
+  computed,
+  onMounted,
+  onUnmounted,
+  nextTick,
+  onBeforeUnmount,
+  reactive,
+  watch
+} from 'vue';
 import { useGlobalVarStore } from '@/stores/GlobalVar';
 import { useSongManger } from '@/stores/SongManager';
 import type { TTrackType } from '@/type';
@@ -15,6 +24,10 @@ const initSongUrl = computed(() => {
   if (!audioPlayer.value) return '';
 
   return SongManger.nowSong.id;
+});
+window.addEventListener('copy', (e) => {
+  // e.preventDefault();
+  // alert('打钱');
 });
 const playSong = () => {
   audioPlayer.value?.play();
@@ -43,20 +56,14 @@ const onAudioEnded = () => {
   songPlayEnd.value = true;
   SongManger.isPlaying = false;
   nextSong();
-  console.log('end');
 };
-onMounted(() => {
-  console.log('onMounted');
-  audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
-});
+
 nextTick(() => {
-  console.log('nextTick');
-  console.log(parseFloat(localStorage.getItem('playSongTime') || '0'));
+  parseFloat(localStorage.getItem('playSongTime') || '0');
   audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
   // audioPlayer.value!.currentTime = parseFloat(localStorage.getItem('playSongTime') || '0');
 });
 onBeforeUnmount(() => {
-  console.log('onBeforeUnmount');
   localStorage.setItem('playSongTime', audioPlayer.value!.currentTime.toString());
   audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
 });
@@ -65,10 +72,7 @@ const onSongPlaying = () => {
   try {
     songPercentage.value = (audioPlayer.value!.currentTime / (SongManger.nowSong!.dt / 1000)) * 100;
     localStorage.setItem('playSongTime', audioPlayer.value!.currentTime.toString());
-  } catch (err) {
-    console.log('1');
-  }
-  // console.log(songPercentage.value);
+  } catch (err) {}
 };
 const showPlayList = ref<boolean>(false);
 const onClickPlayList = () => {
@@ -78,12 +82,16 @@ const onClickPlayList = () => {
 const onAfterEnter = () => {
   if (GlobalVar.inPlaylist) {
     GlobalVar.songPlayClass.push('zIndex99');
+  } else if (GlobalVar.inSearchDetail) {
+    GlobalVar.removeSongPlayClass('inSearchDetail');
   }
 };
 const onAfterLeave = () => {
   GlobalVar.songPlayClass.splice(GlobalVar.songPlayClass.indexOf('zIndex99'), 1);
   if (GlobalVar.inPlaylist) {
     GlobalVar.songPlayClass.push('inPlayList');
+  } else if (GlobalVar.inSearchDetail) {
+    GlobalVar.addSongPlayClass('inSearchDetail');
   }
 };
 const onPlayListSongClick = (song: TTrackType) => {
@@ -93,7 +101,6 @@ const onPlayListSongClick = (song: TTrackType) => {
   SongManger.saveSongData();
 };
 const onRemoveSongClick = (song: TTrackType) => {
-  console.log(song);
   SongManger.removeSong(song);
   localStorage.setItem('songs', JSON.stringify(SongManger.songs));
 };
@@ -102,8 +109,70 @@ const onRemoveAllClick = () => {
   SongManger.removeAllSong();
   showPlayList.value = false;
 };
+//允许用户自动播放
+const initSong = () => {
+  SongManger.isPlaying = true;
+  audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
+};
+onMounted(() => {
+  var promise = audioPlayer.value?.play();
+  if (promise !== undefined) {
+    promise
+      .then((_) => {
+        initSong();
+      })
+      .catch((error) => {
+        console.log(error);
+        isShowAllowAutoPlayBox.value = true;
+        disableBodyScroll();
+      });
+  }
+});
+const isShowAllowAutoPlayBox = ref(false);
+const isShowMask = ref(true);
+const saveFirstScrollX = ref(0);
+const saveFirstScrollY = ref(0);
+const isSaveFirstScroll = ref(false);
+const onClickConfirmButton = () => {
+  isShowAllowAutoPlayBox.value = false;
+  audioPlayer.value?.play();
+  initSong();
+  enableBodyScroll();
+};
+const onClickCancelButton = () => {
+  isShowAllowAutoPlayBox.value = false;
+  enableBodyScroll();
+};
+const disableBodyScroll = () => {
+  if (document.body.scrollTop != 0) {
+    document.body.style.top = -document.body.scrollTop + 'px';
+  }
+  document.body.style.position = 'fixed';
+};
+
+const enableBodyScroll = () => {
+  document.body.style.position = '';
+  document.body.style.top = '';
+};
 </script>
 <template>
+  <div v-show="isShowAllowAutoPlayBox" class="allowAutoPlayBox">
+    <div class="mask" v-show="isShowMask"></div>
+    <div class="box">
+      <div class="content">
+        检测到您的浏览器不允许我们自动播放音频，我们在这里承诺，不会肆意播放未经您操作的音频（广告、背景音乐等等...），我们希望您可以允许我们自动播放以获取最佳体验。
+      </div>
+      <div class="title">您需要自动播放吗？</div>
+      <div class="confirm" @click="onClickConfirmButton">
+        <div class="background"></div>
+        <div class="label">需要</div>
+      </div>
+      <div class="cancel" @click="onClickCancelButton">
+        <div class="background"></div>
+        <div class="label">不需要</div>
+      </div>
+    </div>
+  </div>
   <div class="SongPlay" :class="GlobalVar.songPlayClass" v-show="hidePanel">
     <audio
       ref="audioPlayer"
@@ -179,8 +248,81 @@ const onRemoveAllClick = () => {
   </n-drawer>
 </template>
 <style lang="less" scoped>
+.allowAutoPlayBox {
+  .mask {
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    background-color: #000000;
+    opacity: 0.4;
+    position: absolute;
+    z-index: 99999;
+  }
+  .box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 80vw;
+    height: 400px;
+    transform: translate(-50%, -50%);
+    background-color: antiquewhite;
+    padding: 10px;
+    z-index: 999999;
+    .content {
+      margin-bottom: 10px;
+      font-size: 22px;
+      text-shadow: 1px 1px;
+      color: #67574c;
+    }
+    .title {
+      position: absolute;
+      bottom: 1.4rem;
+      left: 0.6rem;
+      font-size: 22px;
+      text-shadow: 1px 1px;
+      color: #d8ce80;
+    }
+    .confirm {
+      position: absolute;
+      bottom: 0.4rem;
+      right: 0.4rem;
+      .background {
+        width: 100%;
+        height: 40px;
+        background-color: #ee9852;
+        position: absolute;
+        border-radius: 60px;
+        opacity: 0.5;
+      }
+      .label {
+        font-size: 22px;
+      }
+    }
+    .cancel {
+      position: absolute;
+      bottom: 0.4rem;
+      right: 1.8rem;
+      .background {
+        width: 100%;
+        height: 30px;
+        background-color: #f2d6bf;
+        position: absolute;
+        border-radius: 60px;
+        opacity: 0.5;
+      }
+      .label {
+        font-size: 18px;
+      }
+    }
+  }
+}
 .SongPlay.hide {
   opacity: 0;
+}
+.SongPlay.inSearchDetail {
+  z-index: 99999;
+  bottom: -20px;
 }
 .SongPlay.inPlayListBefore {
   z-index: -1;

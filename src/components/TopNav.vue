@@ -26,15 +26,7 @@ const handleScroll = () => {
       </svg>
     </div>
     <div class="topNavCenter">
-      <div class="inputBox relative">
-        <input placeholder="生日快乐2" class="input" type="text" />
-        <svg class="icon sousuo absolute" aria-hidden="true">
-          <use xlink:href="#icon-sousuo"></use>
-        </svg>
-        <svg class="icon saoyisao absolute" aria-hidden="true">
-          <use xlink:href="#icon-saoyisao"></use>
-        </svg>
-      </div>
+      <InputBox></InputBox>
     </div>
     <div class="topNavRight">
       <svg class="icon" aria-hidden="true">
