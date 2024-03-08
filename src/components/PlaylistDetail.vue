@@ -224,10 +224,10 @@ const playAllSongSync = () => {
         onScroll: onScroll
       }"
     >
-      <div id="loading" class="loading" v-if="loading">
+      <!-- <div id="loading" class="loading" v-if="loading">
         <div class="loadingLabel">数据正在飞速赶来~</div>
-      </div>
-      <div class="wrap" v-if="!loading">
+      </div> -->
+      <div class="wrap">
         <div class="header">
           <div class="topBar">
             <div class="drawerLeft">
@@ -248,12 +248,12 @@ const playAllSongSync = () => {
           <div class="center">
             <div class="left">
               <div class="img">
-                <img :src="PlayListDetail!.coverImgUrl" alt="" />
+                <img v-if="!loading" :src="PlayListDetail!.coverImgUrl" alt="" />
               </div>
             </div>
             <div class="right">
               <div class="top">
-                <div class="label">{{ PlayListDetail?.name }}</div>
+                <div class="label" v-if="!loading">{{ PlayListDetail?.name }}</div>
                 <div class="xiangxiasanjiaoxingIcon">
                   <div class="background"></div>
                   <svg class="icon xiangxiasanjiaoxing" aria-hidden="true">
@@ -261,7 +261,7 @@ const playAllSongSync = () => {
                   </svg>
                 </div>
               </div>
-              <div class="bottom">
+              <div class="bottom" v-if="!loading">
                 <img :src="PlayListDetail?.creator.avatarUrl" alt="" class="avatar" />
                 <div class="creater">{{ PlayListDetail?.creator.nickname }}-</div>
                 <div class="guanzhu">
@@ -273,7 +273,7 @@ const playAllSongSync = () => {
           </div>
           <div class="headerBottom">
             <div class="bottomTop">
-              <div class="label">
+              <div class="label" v-if="!loading">
                 <n-ellipsis :line-clamp="1">
                   {{ description }}
                 </n-ellipsis>
@@ -284,19 +284,21 @@ const playAllSongSync = () => {
                 <svg class="icon fenxiang2" aria-hidden="true">
                   <use xlink:href="#icon-fenxiang2"></use>
                 </svg>
-                <div class="shareLabel">{{ share.number }}{{ share.unit }}</div>
+                <div class="shareLabel" v-if="!loading">{{ share.number }}{{ share.unit }}</div>
               </div>
               <div class="comment bottomBox">
                 <svg class="icon pinglun" aria-hidden="true">
                   <use xlink:href="#icon-pinglun"></use>
                 </svg>
-                <div class="commentLabel">{{ comment.number }}{{ comment.unit }}</div>
+                <div class="commentLabel" v-if="!loading">
+                  {{ comment.number }}{{ comment.unit }}
+                </div>
               </div>
               <div class="booked bottomBox">
                 <svg class="icon shoucang1" aria-hidden="true">
                   <use xlink:href="#icon-shoucang1"></use>
                 </svg>
-                <div class="bookedabel">{{ booked.number }}{{ booked.unit }}</div>
+                <div class="bookedabel" v-if="!loading">{{ booked.number }}{{ booked.unit }}</div>
               </div>
             </div>
           </div>
@@ -309,12 +311,12 @@ const playAllSongSync = () => {
                   <use xlink:href="#icon-bofang1"></use>
                 </svg>
               </div>
-              <div class="labelBox" @click="playAllSong">
+              <div v-if="!loading" class="labelBox" @click="playAllSong">
                 <span class="label">播放全部已加载歌曲</span>
-                <span class="statisticSum"
+                <span class="statisticSum" v-if="!loading"
                   >({{ songsData.length }}/{{ PlayListDetail!.trackCount }})</span
                 >
-                <div class="allCanPlay">可播放{{ allCanPlay }}首</div>
+                <div class="allCanPlay" v-if="!loading">可播放{{ allCanPlay }}首</div>
               </div>
             </div>
             <div class="right">
@@ -329,6 +331,7 @@ const playAllSongSync = () => {
           </div>
           <div class="songs">
             <div
+              v-if="!loading"
               ref="songItem"
               class="songItem"
               v-bind:key="index"
@@ -340,7 +343,10 @@ const playAllSongSync = () => {
           </div>
         </div>
         <div class="bottom">
-          <div class="guessLove" v-if="songsData.length === PlayListDetail?.trackCount"></div>
+          <div
+            class="guessLove"
+            v-if="songsData.length === PlayListDetail?.trackCount && !loading"
+          ></div>
           <div class="back" @click="onClose">返回</div>
         </div>
         <div
