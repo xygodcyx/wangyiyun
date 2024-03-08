@@ -12,6 +12,7 @@ import {
 import { useGlobalVarStore } from '@/stores/GlobalVar';
 import { useSongManger } from '@/stores/SongManager';
 import type { TTrackType } from '@/type';
+import AlertBox from './AlertBox/';
 const SongManger = useSongManger();
 const GlobalVar = useGlobalVarStore();
 const curPlaySong = ref<TTrackType>();
@@ -29,14 +30,7 @@ window.addEventListener('copy', (e) => {
   // e.preventDefault();
   // alert('打钱');
 });
-const playSong = () => {
-  audioPlayer.value?.play();
-  SongManger.isPlaying = true;
-};
-const pauseSong = () => {
-  audioPlayer.value?.pause();
-  SongManger.isPlaying = false;
-};
+
 const hidePanel = computed(() => {
   if (!SongManger.nowSong) return false;
   return !(SongManger.nowSong?.name === '' && SongManger.nowSong?.al.picUrl === '');
@@ -49,13 +43,72 @@ const curSong = () => {
 const prevSong = () => {
   SongManger.prevSong();
 };
-const nextSong = () => {
-  SongManger.nextSong();
-};
+
+enum PLAY_MODE {
+  NEXT_SONG,
+  RANDOM_SONG,
+  ONE_SONG
+}
+let play_mode = ref<PLAY_MODE>(PLAY_MODE.RANDOM_SONG);
 const onAudioEnded = () => {
   songPlayEnd.value = true;
   SongManger.isPlaying = false;
-  nextSong();
+  switch (play_mode.value) {
+    case PLAY_MODE.NEXT_SONG:
+      nextSong();
+      break;
+    case PLAY_MODE.RANDOM_SONG:
+      randomSong();
+      break;
+    case PLAY_MODE.ONE_SONG:
+      oneSong();
+      break;
+  }
+};
+//change play_mode
+const changePlayMode = () => {
+  switch (play_mode.value) {
+    case PLAY_MODE.NEXT_SONG:
+      play_mode.value = PLAY_MODE.RANDOM_SONG;
+      localStorage.setItem('play_mode_str', 'randomSong');
+      showAlert('随机播放');
+      break;
+    case PLAY_MODE.RANDOM_SONG:
+      play_mode.value = PLAY_MODE.ONE_SONG;
+      localStorage.setItem('play_mode_str', 'oneSong');
+      showAlert('单曲循环');
+      break;
+    case PLAY_MODE.ONE_SONG:
+      play_mode.value = PLAY_MODE.NEXT_SONG;
+      localStorage.setItem('play_mode_str', 'nextSong');
+      showAlert('顺序播放');
+      break;
+  }
+  console.log(localStorage.getItem('play_mode_str'));
+};
+const showAlert = (
+  title: string,
+  type = 'primary',
+  duration = 1000,
+  callback: Function = () => {}
+) => {
+  AlertBox.alert(
+    {
+      title: title,
+      type: type,
+      duration: duration
+    },
+    callback
+  );
+};
+const nextSong = () => {
+  SongManger.nextSong();
+};
+const randomSong = () => {
+  SongManger.randomSong();
+};
+const oneSong = () => {
+  SongManger.oneSongLoop();
 };
 
 nextTick(() => {
@@ -94,6 +147,20 @@ const onAfterLeave = () => {
     GlobalVar.addSongPlayClass('inSearchDetail');
   }
 };
+const onPlayBtnClick = () => {
+  SongManger.isPlaying ? pauseSong() : playSong();
+};
+const playSong = () => {
+  audioPlayer.value?.play();
+  SongManger.isPlaying = true;
+  showAlert('继续播放');
+};
+const pauseSong = () => {
+  audioPlayer.value?.pause();
+  SongManger.isPlaying = false;
+  showAlert('暂停播放');
+};
+
 const onPlayListSongClick = (song: TTrackType) => {
   const index = SongManger.findSongIndex(song.id);
   SongManger.index = index;
@@ -114,25 +181,42 @@ const initSong = () => {
   SongManger.isPlaying = true;
   audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
 };
-onMounted(() => {
-  var promise = audioPlayer.value?.play();
-  if (promise !== undefined) {
-    promise
-      .then((_) => {
-        initSong();
-      })
-      .catch((error) => {
-        console.log(error);
-        isShowAllowAutoPlayBox.value = true;
-        disableBodyScroll();
-      });
+
+onMounted(async () => {
+  let play_mode_str = localStorage.getItem('play_mode_str');
+  switch (play_mode_str) {
+    case 'nextSong':
+      play_mode.value = PLAY_MODE.NEXT_SONG;
+      break;
+    case 'randomSong':
+      play_mode.value = PLAY_MODE.RANDOM_SONG;
+      break;
+    case 'oneSong':
+      play_mode.value = PLAY_MODE.ONE_SONG;
+      break;
+    default:
+      play_mode.value = PLAY_MODE.NEXT_SONG;
+  }
+  // var ctx = new AudioContext();
+  // console.log(ctx.state);
+  // if (ctx.state == 'running') {
+  //   initSong();
+  //   ctx.close();
+  // } else {
+  //   isShowAllowAutoPlayBox.value = true;
+  //   disableBodyScroll();
+  //   ctx.close();
+  // }
+  try {
+    await audioPlayer.value?.play();
+    initSong();
+  } catch (err) {
+    // isShowAllowAutoPlayBox.value = true;
+    disableBodyScroll();
   }
 });
 const isShowAllowAutoPlayBox = ref(false);
 const isShowMask = ref(true);
-const saveFirstScrollX = ref(0);
-const saveFirstScrollY = ref(0);
-const isSaveFirstScroll = ref(false);
 const onClickConfirmButton = () => {
   isShowAllowAutoPlayBox.value = false;
   audioPlayer.value?.play();
@@ -173,6 +257,7 @@ const enableBodyScroll = () => {
       </div>
     </div>
   </div>
+
   <div class="SongPlay" :class="GlobalVar.songPlayClass" v-show="hidePanel">
     <audio
       ref="audioPlayer"
@@ -196,7 +281,27 @@ const enableBodyScroll = () => {
       </div>
     </div>
     <div class="right">
-      <div class="playIcon" @click="SongManger.isPlaying ? pauseSong() : playSong()">
+      <div class="playMode" @click="changePlayMode">
+        <div class="playModeItem" v-show="play_mode == PLAY_MODE.NEXT_SONG">
+          <div class="background"></div>
+          <svg class="icon shunxubofang" aria-hidden="true">
+            <use xlink:href="#icon-shunxubofang"></use>
+          </svg>
+        </div>
+        <div class="playModeItem" v-show="play_mode == PLAY_MODE.RANDOM_SONG">
+          <div class="background"></div>
+          <svg class="icon shuffle" aria-hidden="true">
+            <use xlink:href="#icon-16gl-shuffle"></use>
+          </svg>
+        </div>
+        <div class="playModeItem" v-show="play_mode == PLAY_MODE.ONE_SONG">
+          <div class="background"></div>
+          <svg class="icon loop" aria-hidden="true">
+            <use xlink:href="#icon-icon-"></use>
+          </svg>
+        </div>
+      </div>
+      <div class="playIcon" @click="onPlayBtnClick">
         <n-progress
           class="songProgress"
           type="circle"
@@ -395,6 +500,34 @@ const enableBodyScroll = () => {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    .playMode {
+      position: absolute;
+      right: -30px;
+      top: 10px;
+      .playModeItem {
+        position: absolute;
+        width: 46px;
+        height: 46px;
+        bottom: -39px;
+        right: 150px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        // background-color: #0000004a;
+        .background {
+          width: 90%;
+          height: 90%;
+          position: absolute;
+          background-color: aliceblue;
+          opacity: 0.3;
+          border-radius: 50px;
+        }
+        .icon {
+          width: 80%;
+          height: 80%;
+        }
+      }
+    }
     .playIcon {
       margin-right: 0.6rem;
       display: flex;

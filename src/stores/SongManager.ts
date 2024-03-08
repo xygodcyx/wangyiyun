@@ -75,6 +75,16 @@ export const useSongManger = defineStore('songManager', () => {
     index.value = _index >= songs.value.length ? 0 : _index;
     isPlaying.value = true;
   };
+  const randomSong = () => {
+    let _index = Math.floor(Math.random() * songs.value.length);
+    index.value = _index >= songs.value.length ? 0 : _index;
+    isPlaying.value = true;
+  };
+  const oneSongLoop = () => {
+    let _index = index.value;
+    index.value = _index >= songs.value.length ? 0 : _index;
+    isPlaying.value = true;
+  };
   const prevSong = () => {
     let _index = index.value;
     _index--;
@@ -91,6 +101,8 @@ export const useSongManger = defineStore('songManager', () => {
     curPlaySongData,
     prevSong,
     nextSong,
+    randomSong,
+    oneSongLoop,
     hasSong,
     findSongIndex,
     addSong,
