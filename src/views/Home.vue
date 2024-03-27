@@ -8,7 +8,8 @@ const bottomNavItemActiveIndex = ref(0);
 <template>
   <!-- <div><AudioPlay></AudioPlay>;</div> -->
   <div class="Home" id="Home">
-    <div class="content">
+    <!-- <TestCom></TestCom> -->
+    <div class="content" style="display: block">
       <div v-show="bottomNavItemActiveIndex == 0" class="contentItem myDiscover">
         <TopNav></TopNav>
         <div class="banner">

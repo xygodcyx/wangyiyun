@@ -1,5 +1,6 @@
 import { searchSong } from './SearchSong';
 import { getSongUrl } from './GetSongUrl';
+import { getSongUrlNew } from './GetSongUrlNew';
 import { checkMusicUsable } from './CheckMusicUsable';
 import { getBanner } from './GetBanner';
 import { getRecommendedPlaylist } from './SongList/GetRecommendedPlaylist';
@@ -13,6 +14,7 @@ import { searchCloud } from './Search/SearchCloud';
 export default {
   searchSong,
   getSongUrl,
+  getSongUrlNew,
   checkMusicUsable,
   getBanner,
   getRecommendedPlaylist,

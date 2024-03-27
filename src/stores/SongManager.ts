@@ -1,4 +1,4 @@
-import { computed, onMounted, ref, reactive } from 'vue';
+import { computed, onMounted, ref, reactive, nextTick } from 'vue';
 import { defineStore } from 'pinia';
 import type { TTrackType } from '@/type';
 export const useSongManger = defineStore('songManager', () => {
@@ -11,7 +11,8 @@ export const useSongManger = defineStore('songManager', () => {
   const songs = ref<Array<TTrackType>>([]);
   const nowSong = computed(() => songs.value[index.value]);
 
-  onMounted(() => {
+  onMounted(() => {});
+  const initAllSongData = () => {
     if (
       !localStorage.getItem('songs') ||
       localStorage.getItem('songs') == 'undefined' ||
@@ -34,6 +35,9 @@ export const useSongManger = defineStore('songManager', () => {
     curPlaySongData.time = parseFloat(localStorage.getItem('playSongTime') || '0');
     curPlaySongData.song = JSON.parse(localStorage.getItem('songData') || '');
     index.value = findSongIndex(curPlaySongData.song.id);
+  };
+  nextTick(() => {
+    initAllSongData();
   });
   const canPlay = computed(() => songs.value.length !== 0);
   const hasSong = (songId: number) => {

@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AlertBox: typeof import('./src/components/AlertBox/AlertBox.vue')['default']
     BottomNav: typeof import('./src/components/BottomNav.vue')['default']
+    DialogBox: typeof import('./src/components/DialogBox/DialogBox.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
     IconEcosystem: typeof import('./src/components/icons/IconEcosystem.vue')['default']
@@ -30,7 +31,11 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Song: typeof import('./src/components/Song.vue')['default']
+    SongDetail: typeof import('./src/components/SongDetail.vue')['default']
     SongPlay: typeof import('./src/components/SongPlay.vue')['default']
+    TestCom: typeof import('./src/components/TestCom.vue')['default']
     TopNav: typeof import('./src/components/TopNav.vue')['default']
+    VueUseTest: typeof import('./src/components/VueUseTest.vue')['default']
+    YuYin: typeof import('./src/components/YuYin.vue')['default']
   }
 }

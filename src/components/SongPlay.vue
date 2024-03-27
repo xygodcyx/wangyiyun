@@ -7,12 +7,15 @@ import {
   nextTick,
   onBeforeUnmount,
   reactive,
-  watch
+  watch,
+  watchEffect
 } from 'vue';
 import { useGlobalVarStore } from '@/stores/GlobalVar';
 import { useSongManger } from '@/stores/SongManager';
 import type { TTrackType } from '@/type';
 import AlertBox from './AlertBox/';
+import request from '@/request';
+const { getSongUrlNew } = request;
 const SongManger = useSongManger();
 const GlobalVar = useGlobalVarStore();
 const curPlaySong = ref<TTrackType>();
@@ -20,11 +23,44 @@ const audioPlayer = ref<HTMLAudioElement>();
 const isPlaying = ref<boolean>(false);
 const songPlayEnd = ref<boolean>(false);
 const songPercentage = ref<number>(0);
-const initSongUrl = computed(() => {
+// const initSongUrl = computed(async () => {
+//   if (!SongManger.canPlay) return '';
+//   if (!audioPlayer.value) return '';
+//   const data = (await getSongUrlNew(SongManger.nowSong.id)).data.data[0];
+
+//   return data.url;
+// });
+const SongManagerSongId = computed(() => {
+  return SongManger.nowSong.id;
+});
+const initSongUrl = ref('');
+// watch(
+//   SongManagerSongId,
+//   async () => {
+//     if (!SongManger.canPlay) return '';
+//     if (!audioPlayer.value) return '';
+//     const data = (await getSongUrlNew(SongManger.nowSong.id)).data.data[0];
+//     initSongUrl.value = data.url;
+//   },
+//   {
+//     immediate: true
+//   }
+// );
+type SongDetailDataType = {
+  br: number;
+  level: string;
+  url: string;
+  id: number;
+  fee: number;
+  type: string;
+};
+watchEffect(async () => {
   if (!SongManger.canPlay) return '';
   if (!audioPlayer.value) return '';
-
-  return SongManger.nowSong.id;
+  const data = (await getSongUrlNew(SongManger.nowSong.id)).data.data[0];
+  console.log(data);
+  initSongUrl.value = await data.url;
+  console.log();
 });
 window.addEventListener('copy', (e) => {
   // e.preventDefault();
@@ -64,6 +100,10 @@ const onAudioEnded = () => {
       oneSong();
       break;
   }
+  localStorage.setItem('songs', JSON.stringify(SongManger.songs));
+  audioPlayer.value!.currentTime = 0;
+  audioPlayer.value!.pause();
+  audioPlayer.value!.play();
 };
 //change play_mode
 const changePlayMode = () => {
@@ -165,6 +205,9 @@ const onPlayListSongClick = (song: TTrackType) => {
   const index = SongManger.findSongIndex(song.id);
   SongManger.index = index;
   showPlayList.value = false;
+  audioPlayer.value!.play();
+  SongManger.isPlaying = true;
+  SongManger.curPlaySongData.time = 0;
   SongManger.saveSongData();
 };
 const onRemoveSongClick = (song: TTrackType) => {
@@ -181,7 +224,6 @@ const initSong = () => {
   SongManger.isPlaying = true;
   audioPlayer.value!.currentTime = SongManger.curPlaySongData.time;
 };
-
 onMounted(async () => {
   let play_mode_str = localStorage.getItem('play_mode_str');
   switch (play_mode_str) {
@@ -197,23 +239,14 @@ onMounted(async () => {
     default:
       play_mode.value = PLAY_MODE.NEXT_SONG;
   }
-  // var ctx = new AudioContext();
-  // console.log(ctx.state);
-  // if (ctx.state == 'running') {
-  //   initSong();
-  //   ctx.close();
-  // } else {
-  //   isShowAllowAutoPlayBox.value = true;
-  //   disableBodyScroll();
-  //   ctx.close();
-  // }
   try {
-    await audioPlayer.value?.play();
-    initSong();
-  } catch (err) {
-    // isShowAllowAutoPlayBox.value = true;
-    disableBodyScroll();
-  }
+    await audioPlayer.value?.pause();
+    // initSong();
+    enableBodyScroll();
+  } catch (err) {}
+  isShowAllowAutoPlayBox.value = true;
+  isShowAllowAutoPlayBox.value = false;
+  disableBodyScroll();
 });
 const isShowAllowAutoPlayBox = ref(false);
 const isShowMask = ref(true);
@@ -259,9 +292,16 @@ const enableBodyScroll = () => {
   </div>
 
   <div class="SongPlay" :class="GlobalVar.songPlayClass" v-show="hidePanel">
-    <audio
+    <!-- <audio
       ref="audioPlayer"
       :src="`https://music.163.com/song/media/outer/url?id=${initSongUrl}.mp3`"
+      autoplay
+      @ended="onAudioEnded"
+      @timeupdate="onSongPlaying"
+    ></audio> -->
+    <audio
+      ref="audioPlayer"
+      :src="initSongUrl"
       autoplay
       @ended="onAudioEnded"
       @timeupdate="onSongPlaying"

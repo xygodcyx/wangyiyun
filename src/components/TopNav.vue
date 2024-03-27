@@ -29,9 +29,7 @@ const handleScroll = () => {
       <InputBox></InputBox>
     </div>
     <div class="topNavRight">
-      <svg class="icon" aria-hidden="true">
-        <use xlink:href="#icon-yuyin"></use>
-      </svg>
+      <YuYin></YuYin>
     </div>
   </div>
 </template>
@@ -65,9 +63,6 @@ const handleScroll = () => {
   }
   .topNavRight {
     margin-top: 0.2rem;
-    .icon {
-      filter: saturate(30%);
-    }
   }
   .topNavCenter {
     font-size: 0.4rem;
