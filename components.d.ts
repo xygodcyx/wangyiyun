@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     AlertBox: typeof import('./src/components/AlertBox/AlertBox.vue')['default']
     BottomNav: typeof import('./src/components/BottomNav.vue')['default']
+    ChatRoom: typeof import('./src/components/ChatRoom.vue')['default']
     DialogBox: typeof import('./src/components/DialogBox/DialogBox.vue')['default']
     IconCommunity: typeof import('./src/components/icons/IconCommunity.vue')['default']
     IconDocumentation: typeof import('./src/components/icons/IconDocumentation.vue')['default']
@@ -32,6 +33,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Song: typeof import('./src/components/Song.vue')['default']
     SongDetail: typeof import('./src/components/SongDetail.vue')['default']
+    SongIyric: typeof import('./src/components/SongIyric.vue')['default']
     SongPlay: typeof import('./src/components/SongPlay.vue')['default']
     TestCom: typeof import('./src/components/TestCom.vue')['default']
     TopNav: typeof import('./src/components/TopNav.vue')['default']

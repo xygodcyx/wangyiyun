@@ -10,6 +10,7 @@ import { getPlaylistAllSongs } from './SongList/GetPlaylistAllSongs';
 import { searchDefaultKeyWord } from './Search/SearchDefaultKeyWord';
 import { searchSuggest } from './Search/SearchSuggest';
 import { searchCloud } from './Search/SearchCloud';
+import { getSongLyric } from './GetSongLyric';
 
 export default {
   searchSong,
@@ -23,5 +24,6 @@ export default {
   getPlaylistAllSongs, //获取所有歌单，避免一次性获取太多
   searchDefaultKeyWord,
   searchSuggest,
-  searchCloud
+  searchCloud,
+  getSongLyric
 };

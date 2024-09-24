@@ -77,3 +77,13 @@ export type TPlayListDetailType = {
 export type TPlayListAllSongs = {
   songs: Array<TTrackIdType>;
 };
+
+export type TSongLyric = {
+  lrc: {
+    lyric: string;
+  };
+  lyricUser: {
+    nickname: string;
+    uptime: number;
+  };
+};
