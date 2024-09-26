@@ -1,0 +1,9 @@
+{
+  "common": {
+    "fontFamily": "v-sans",
+    "fontFamilyMono": "v-mono",
+    "fontWeight": "600",
+    "fontWeightStrong": "300"
+  }
+}
+  

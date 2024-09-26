@@ -1,0 +1,31 @@
+<!-- const loadSong = () => {
+  return new Promise(async (resolve, reject) => {
+    let result = {
+      status: false,
+      msg: '出错了~'
+    };
+    try {
+      let songs = await searchSong('海阔天空');
+      if (songs.status !== 201) reject(result);
+      const id = songs.data.result.songs[Math.floor(Math.random() * 10)].id;
+      let able = await checkMusicUsable(id);
+      if (able.status !== 200) reject(result);
+      const success = able.data.success;
+      const message = able.data.message;
+      if (!success) {
+        result.msg = message;
+        reject(result);
+      }
+      const songUrl = await getSongUrl(id);
+      if (songUrl.status != 200) reject(result);
+      const url = songUrl.data.data[0].url;
+      audioSource.value = url;
+      loading.value = false;
+      result.status = true;
+      result.msg = 'ok';
+      resolve(result);
+    } catch (error) {
+      reject(result);
+    }
+  });
+}; -->

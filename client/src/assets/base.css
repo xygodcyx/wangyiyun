@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'AlimamaFangYuanTiVF-Thin';
+}
+.icon {
+  width: 0.6rem;
+  height: 0.6rem;
+  vertical-align: -0.15em;
+  fill: currentColor;
+  overflow: hidden;
+}
+.absolute {
+  position: absolute;
+}
+.relative {
+  position: relative;
+}
+@font-face {
+  font-family: 'AlimamaFangYuanTiVF-Thin';
+  src: url('font//AlimamaFangYuanTiVF-Thin.woff2');
+}
