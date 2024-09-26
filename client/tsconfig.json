@@ -12,6 +12,6 @@
     }
   ],
   "compilerOptions": {
-    "module": "ES2015"
+    "module": "ES2020"
   }
 }
