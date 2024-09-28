@@ -288,7 +288,9 @@ async function consturctServer(moduleDefs) {
     })
   }
   app.get('/', (req, res) => {
-    res.send('启动成功')
+    res.send(
+      '当你看到这个页面时,恭喜你! NeteaseCloudMusicApi服务已经启动成功,您可以访问接口来获取数据了',
+    )
   })
 
   return app
