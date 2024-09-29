@@ -302,7 +302,7 @@ async function consturctServer(moduleDefs) {
  * @returns {Promise<import('express').Express & ExpressExtension>}
  */
 async function serveNcmApi(options) {
-  const port = Number(options.port || process.env.PORT || '3000')
+  const port = Number(options.port || process.env.PORT || '8080')
   const host = options.host
 
   const checkVersionSubmission =
@@ -323,8 +323,8 @@ async function serveNcmApi(options) {
 
   /** @type {import('express').Express & ExpressExtension} */
   const appExt = app
-  appExt.server = app.listen(port, host, () => {
-    console.log(`server running @ http://${host ? host : 'localhost'}:${port}`)
+  appExt.server = app.listen(8080, host, () => {
+    console.log(`server running @ http://${host ? host : 'localhost'}:${8080}`)
   })
 
   return appExt
