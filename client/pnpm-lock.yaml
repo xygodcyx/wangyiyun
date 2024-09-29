@@ -43,7 +43,7 @@ importers:
         specifier: ^21.1.6
         version: 21.1.7
       '@types/node':
-        specifier: ^20.11.10
+        specifier: ^20.16.9
         version: 20.16.9
       '@vicons/fluent':
         specifier: ^0.12.0

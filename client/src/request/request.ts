@@ -1,8 +1,8 @@
 import axios from 'axios';
 export const request = axios.create({
-  // baseURL: 'http://localhost:80/', //开发环境
+  // baseURL: 'http://localhost:8080/', //开发环境
   // baseURL: ' http://yuandifuhuo.natapp1.cc/', //生产环境
-  baseURL: import.meta.env.wangyiyunAPI, //免费的生产环境
+  baseURL: import.meta.env.VITE_WANGYIYUN_API_BASE_URL, // 读取环境变量
   timeout: 6000
 });
 
